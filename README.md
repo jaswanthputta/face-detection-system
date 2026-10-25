@@ -1,136 +1,162 @@
-# 📸 FaceAI — Face Detection System
+# FaceAI Pro — Autonomous Computer Vision Assistant
 
-A computer vision application built using Python, OpenCV, and Streamlit to detect and count human faces in images. The application highlights detected faces with bounding boxes and allows users to download the processed image.
+FaceAI Pro is an AI-powered computer vision application built with Python, OpenCV, NumPy, Streamlit, and NVIDIA Nemotron. It detects faces in uploaded images, evaluates image quality, and generates an AI-written analysis report using an autonomous tool-calling workflow.
 
-## ✨ Features
+## Features
 
-- **Image Face Detection:** Detect faces in JPG, JPEG, and PNG images.
-- **Multiple Face Detection:** Detect multiple faces in a single image.
-- **Bounding Boxes:** Highlight detected faces with green rectangles.
-- **Face Counting:** Display the total number of detected faces.
-- **Image Analysis:** Display the image dimensions and detection results.
-- **Download Results:** Download the processed image with bounding boxes.
-- **Live Webcam Detection:** Run real-time face detection using a webcam through the standalone webcam script.
-- **Interactive Web Interface:** Upload and analyze images through a Streamlit application.
+- **Face Detection:** Detects faces in uploaded JPG and PNG images using OpenCV's Haar Cascade classifier.
+- **Face Localization:** Draws bounding boxes around detected faces and displays their coordinates.
+- **Image Quality Analysis:** Estimates image sharpness and average brightness.
+- **Autonomous AI Agent:** Selects available analysis tools, executes them, and uses their results to prepare a report.
+- **NVIDIA AI Integration:** Uses the NVIDIA API with the Nemotron 3 Ultra model for AI-generated reports.
+- **Interactive Web Interface:** Provides an easy-to-use Streamlit interface for uploading and analyzing images.
+- **Downloadable Results:** Download annotated images and AI-generated reports.
 
-## 🛠️ Technologies Used
+## Technology Stack
 
-- Python
-- OpenCV
-- NumPy
-- Pillow
-- Streamlit
-- Haar Cascade Classifier
+| Technology | Purpose |
+|---|---|
+| Python | Core application and agent logic |
+| OpenCV | Face detection and image processing |
+| NumPy | Image data and numerical calculations |
+| Streamlit | Interactive web interface |
+| NVIDIA API | AI model integration |
+| NVIDIA Nemotron 3 Ultra | AI reasoning and report generation |
+| Requests | API communication |
+| python-dotenv | Loading environment variables |
+| Pillow | Image loading and conversion |
 
-## 📂 Project Structure
+## How It Works
+
+1. The user uploads a JPG or PNG image through the Streamlit interface.
+2. The autonomous agent receives the image and the available tool definitions.
+3. The AI agent selects image-analysis tools, such as face detection and image quality analysis.
+4. The selected Python functions process the image locally.
+5. The results are returned to the agent for report generation.
+6. The interface displays detected faces, bounding boxes, image-quality metrics, agent activity, and the AI report.
+7. The user can download the annotated image and report.
+
+## Project Structure
 
 ```text
 face-detection-system/
-├── app.py
-├── detect.py
-├── webcam.py
-├── requirements.txt
-├── README.md
-├── person.jpg
-└── screenshots/
+│
+├── app.py                  # Streamlit application
+├── autonomous_agent.py     # Autonomous AI agent and tool execution
+├── analysis_tools.py       # Face detection and image quality functions
+├── ai_agent.py             # AI report generation workflow
+├── agent_workflow.py       # Fixed analysis workflow
+├── requirements.txt        # Python dependencies
+├── README.md               # Project documentation
+├── .gitignore              # Files excluded from Git
+├── .env                    # Private API configuration (not committed)
+│
+└── person.jpg              # Optional local test image
 ```
 
-`person.jpg` is an optional local test image. The `screenshots/` folder can contain screenshots of your application.
+## Prerequisites
 
-## ⚙️ Installation
+- Python 3.10 or later
+- pip
+- A valid NVIDIA API key with access to the configured model
+- Internet connectivity for NVIDIA API requests
+
+The project has been tested with Python 3.12.
+
+## Installation
 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/face-detection-system.git
+git clone https://github.com/jaswanthputta/face-detection-system.git
 cd face-detection-system
 ```
 
-Replace `YOUR-USERNAME` with your GitHub username and use the repository URL you create.
-
 ### 2. Create a virtual environment
 
-For Windows:
+**Windows:**
 
-```powershell
-python -m venv venv
-venv\Scripts\activate
+```bash
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
 ### 3. Install dependencies
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install --upgrade pip
+pip install -r requirements.txt
 ```
 
-## 🚀 How to Run
+### 4. Configure the NVIDIA API key
 
-### Run the Streamlit web application
+Create a `.env` file in the project root directory:
+
+```env
+NVIDIA_API_KEY=your_nvidia_api_key
+```
+
+Replace the placeholder with your own API key. Never publish your real API key or commit the `.env` file to GitHub.
+
+### 5. Run the application
 
 ```bash
 python -m streamlit run app.py
 ```
 
-Open the local URL displayed in the terminal, usually:
+Streamlit will display a local URL in your terminal. Open that URL in your browser to use FaceAI Pro.
 
-`http://localhost:8501`
+## Usage
 
-Upload an image to view the original image, detected faces, face count, and download option.
+1. Open FaceAI Pro in your browser.
+2. Upload a JPG or PNG image.
+3. Click **Run Autonomous Analysis**.
+4. Review the agent's activity and executed tools.
+5. View the detected faces and bounding-box coordinates.
+6. Review the sharpness, brightness, and resolution metrics.
+7. Read the generated AI report.
+8. Download the annotated image or report if needed.
 
-### Run image detection
+## Image Quality Metrics
 
-Place a test image named `person.jpg` in the project directory, then run:
+The application calculates:
 
-```bash
-python detect.py
-```
+- **Sharpness score:** Uses the variance of the Laplacian to estimate image sharpness.
+- **Average brightness:** Uses grayscale pixel values to estimate brightness.
+- **Resolution:** Displays the image width and height in pixels.
 
-### Run webcam detection
+These metrics are heuristic estimates. Their interpretation can vary with image content, lighting, and resolution.
 
-```bash
-python webcam.py
-```
+## Security and Privacy
 
-Press the **ESC** key to close the webcam window.
+- Keep API keys in environment variables rather than source code.
+- Keep `.env` and other private configuration files out of Git commits.
+- Use images that you have permission to process.
+- Image processing functions run locally, while the AI report workflow sends analysis information to the configured NVIDIA API.
+- Do not assume uploaded image data is never transmitted externally; review the agent implementation and API provider's policies before using sensitive images.
 
-## 🧠 How It Works
+## Limitations
 
-1. Load the input image or capture a frame from the webcam.
-2. Convert the image to grayscale.
-3. Load OpenCV's pre-trained Haar Cascade frontal-face classifier.
-4. Detect face-like regions using `detectMultiScale()`.
-5. Draw bounding boxes around detected faces.
-6. Count the detected faces and display the results.
+- Haar Cascade face detection may miss faces or produce false detections in difficult lighting, unusual angles, or low-quality images.
+- Sharpness and brightness scores do not guarantee that an image is suitable for every purpose.
+- AI-generated reports may contain errors and should be treated as suggestions.
+- NVIDIA API availability, model access, and response times depend on the configured service and account.
 
-## 📌 Face Detection vs. Face Recognition
+## Future Improvements
 
-**Face detection** determines whether faces are present in an image and identifies their locations.
+- Add webcam-based face detection.
+- Improve detection using a modern deep-learning model.
+- Add more image-quality metrics.
+- Export structured analysis results as JSON or CSV.
+- Add automated tests and more robust error handling.
+- Improve deployment and configuration documentation.
 
-**Face recognition** attempts to determine whose face it is.
-
-This project implements face detection, not identity recognition.
-
-## ⚠️ Limitations
-
-- Detection accuracy depends on lighting, image quality, face angle, and visibility.
-- Haar Cascade may miss faces or produce false detections.
-- The frontal-face model is less reliable for profiles and heavily obstructed faces.
-- The application does not identify individuals.
-
-## 🔮 Future Improvements
-
-- Add face cropping and face image export.
-- Support video file uploads.
-- Improve detection using a modern deep-learning-based face detector.
-- Add detection confidence information where supported by the selected model.
-- Deploy the application online.
-
-## 👨‍💻 Author
+## Author
 
 **Jaswanth Putta**
 
-GitHub: https://github.com/jaswanthputta
+GitHub: [@jaswanthputta](https://github.com/jaswanthputta)
 
-## 📄 License
+## License
 
-This project is available for learning and educational purposes. Add an explicit open-source license if you want to define permissions for reuse and redistribution.
+Add a license file if you intend to distribute this project for reuse. Until a license is specified, do not assume others have permission to reuse the code.
